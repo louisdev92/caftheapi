@@ -1,6 +1,8 @@
 const express = require("express");
 const db = require("./db");
 const bcrypt = require("bcrypt");
+const res = require("express/lib/response");
+const {hash} = require("bcrypt");
 const router = express.Router();
 
 /*
@@ -51,6 +53,43 @@ router.get("/produits/:id", (req, res) => {
  * }
  */
 
-/* npm install bcrypt */
+
+router.post("/clients/register", (req, res) => {
+    const { nom, prenom, email, mot_de_passe } = req.body;
+
+    // Vérifier si l'email est déjà présent dans la base de données
+    db.query("SELECT * FROM clients WHERE email = ?", [email], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: "Erreur du serveur" });
+        }
+        if (result.length > 0) {
+            return res.status(400).json({ message: "Cette adresse e-mail est déjà utilisée" });
+        }
+
+        // Hash du mot de passe
+        bcrypt.hash(mot_de_passe, 10, (err, hash) => {
+            if (err) {
+                return res.status(500).json({ message: "Erreur lors du hashage du mot de passe" });
+            }
+
+            // Insertion du nouveau client
+            db.query("INSERT INTO clients (nom, prenom, email, mot_de_passe) VALUES (?, ?, ?, ?)",
+                [nom, prenom, email, hash],
+                (err, result) => {
+                    if (err) {
+                        return res
+                            .status(500)
+                            .json({ message: "Erreur lors de l'inscription" });
+                    }
+                    return res.status(201).json({ message: "Client enregistré avec succès", client_id: result.insertId });
+                }
+            );
+        });
+    });
+});
+
+
+
+
 
 module.exports = router;

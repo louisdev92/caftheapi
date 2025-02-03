@@ -17,3 +17,5 @@ db.connect((error)=>{
 
     console.log("Connecté à la bdd MySQL");
 });
+
+module.exports = db;

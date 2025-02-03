@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("./db");
+const bcrypt = require("bcrypt");
 const router = express.Router();
 
 /*
@@ -34,5 +35,22 @@ router.get("/produits/:id", (req, res) => {
         res.json(result[0]); // Retournera que Le premier résultat
     });
 });
+
+
+
+
+/*
+ * Route : Inscription d'un client
+ * Get /api/clients/register
+ * Exemple : JSON
+ * {
+ * "nom": "Dupont",
+ * "prenom": "Jean",
+ * "email": "jean.dupont@mail.com",
+ * "mot_de_passe": "monMotDePasse"
+ * }
+ */
+
+/* npm install bcrypt */
 
 module.exports = router;

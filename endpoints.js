@@ -102,5 +102,59 @@ router.post("/clients/register", (req, res) => {
     });
 });
 
+// Lister commande d'un client
+
+router.get("/clients/:id/commandes", (req, res) => {
+    const { id } = req.params;
+
+    db.query("SELECT * FROM commandes WHERE client_id = ?", [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: "Erreur du serveur" });
+        }
+        res.json(result);
+    });
+});
+
+// Détails d'une commande d'un client
+
+router.get("/clients/:id/commandes/:commande_id", (req, res) => {
+    const { id, commande_id } = req.params;
+
+    // Récupérer la commande avec les détails de base
+
+    db.query(
+        "SELECT * FROM commandes WHERE client_id = ? AND commande_id = ?",
+        [id, commande_id],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: "Erreur du serveur" });
+            }
+            if (result.length === 0) {
+                return res.status(404).json({ message: "Commande non trouvée" });
+            }
+
+            const commande = result[0];
+
+            // Récupérer les lignes de commande associées à cette commande
+            db.query(
+                "SELECT lc.*, p.nom AS produit_nom, p.description AS produit_description, p.prix_HT, p.prix_TTC FROM lignes_commande lc " +
+                "JOIN produits p ON lc.produit_id = p.produit_id " +
+                "WHERE lc.commande_id = ?",
+                [commande_id],
+                (err, lignes_result) => {
+                    if (err) {
+                        return res.status(500).json({ message: "Erreur du serveur" });
+                    }
+
+                    // Ajouter les lignes de commande aux détails de la commande
+                    commande.lignes_commande = lignes_result;
+
+                    res.json(commande);
+                }
+            );
+        }
+    );
+});
+
 
 module.exports = router;

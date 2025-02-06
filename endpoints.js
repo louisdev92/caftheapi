@@ -86,15 +86,21 @@ router.post("/clients/register", (req, res) => {
     });
 });
 
+// Fiche client
 
+    router.get("/ficheclient/:id", (req, res) => {
+        const {id} = req.params; // const id = req.params.id;
 
-
-
-
-
-
-
-
+    db.query("SELECT * FROM clients WHERE client_id = ?", [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: "Erreur du serveur" });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Client non trouvé" });
+        }
+        res.json(result[0]); // Retournera que Le premier résultat
+    });
+});
 
 
 module.exports = router;

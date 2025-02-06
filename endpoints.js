@@ -39,8 +39,6 @@ router.get("/produits/:id", (req, res) => {
 });
 
 
-
-
 /*
  * Route : Inscription d'un client
  * Get /api/clients/register
@@ -87,6 +85,15 @@ router.post("/clients/register", (req, res) => {
         });
     });
 });
+
+
+
+
+
+
+
+
+
 
 
 

@@ -27,7 +27,7 @@ router.get("/produits", (req, res) => {
 router.get("/produits/:id", (req, res) => {
     const {id} = req.params; // const id = req.params.id;
 
-    db.query("SELECT * FROM produits WHERE id = ?", [id], (err, result) => {
+    db.query("SELECT * FROM produits WHERE produit_id = ?", [id], (err, result) => {
         if (err) {
             return res.status(500).json({ message: "Erreur du serveur" });
         }

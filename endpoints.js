@@ -88,29 +88,6 @@ router.post("/clients/register", (req, res) => {
     });
 });
 
-/*
-// Route pour récupérer les 5 produits les plus vendus
-router.get('/top-ventes', (req, res) => {
-    const query = `
-        SELECT p.nom, COUNT(lc.ligne_commande_id) AS nombre_ventes
-        FROM lignes_commande lc
-                 JOIN produits p ON lc.produit_id = p.produit_id
-        GROUP BY p.nom
-        ORDER BY nombre_ventes DESC
-            LIMIT 5;
-    `;
-
-    // Exécution de la requête SQL
-    db.query(query, (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: "Erreur du serveur" });
-        }
-        // Envoie du résultat en JSON
-        res.json(result);
-    });
-});
- */
-
 
 
 module.exports = router;

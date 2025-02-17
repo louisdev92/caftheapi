@@ -269,28 +269,32 @@ router.post("/clients/login", (req, res) => {
         });
     });
 
-    router.get("/produits/search", (req, res) => {
+    router.get("/api/produits/search", (req, res) => {
         const { nom } = req.query;
-        console.log('Received search query:', nom); // Vérifiez la valeur ici
 
         if (!nom) {
             return res.status(400).json({ message: "Le paramètre 'nom' est requis" });
         }
 
-        const sanitizedNom = nom.trim(); // Suppression des espaces inutiles
+        const sanitizedNom = nom.trim(); // Supprime les espaces inutiles
 
         const query = "SELECT * FROM produits WHERE LOWER(nom) LIKE LOWER(?)";
-        db.query(query, [`%${sanitizedNom}%`], (err, result) => {
+        const searchValue = `%${sanitizedNom}%`;
+
+        db.query(query, [searchValue], (err, result) => {
             if (err) {
-                console.error("Database error:", err);
                 return res.status(500).json({ message: "Erreur du serveur", error: err.message });
             }
+
+
             if (result.length === 0) {
                 return res.status(404).json({ message: "Aucun produit trouvé" });
             }
+
             res.json(result);
         });
     });
+
 
 });
 

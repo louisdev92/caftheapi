@@ -270,22 +270,30 @@ router.post("/clients/login", (req, res) => {
     });
 
     router.get("/api/produits/search", (req, res) => {
-        const { nom } = req.query;
+        const { categorie_nom, minPriceTTC, maxPriceTTC } = req.query;
 
-        if (!nom) {
-            return res.status(400).json({ message: "Le paramètre 'nom' est requis" });
+        let query = "SELECT * FROM produits WHERE 1=1";
+        const params = [];
+
+        if (categorie_nom) {
+            query += " AND categorie_nom = ?";
+            params.push(categorie_nom);
         }
 
-        const sanitizedNom = nom.trim(); // Supprime les espaces inutiles
+        if (minPriceTTC !== undefined) {
+            query += " AND prix_TTC >= ?";
+            params.push(parseFloat(minPriceTTC));
+        }
 
-        const query = "SELECT * FROM produits WHERE LOWER(nom) LIKE LOWER(?)";
-        const searchValue = `%${sanitizedNom}%`;
+        if (maxPriceTTC !== undefined) {
+            query += " AND prix_TTC <= ?";
+            params.push(parseFloat(maxPriceTTC));
+        }
 
-        db.query(query, [searchValue], (err, result) => {
+        db.query(query, params, (err, result) => {
             if (err) {
                 return res.status(500).json({ message: "Erreur du serveur", error: err.message });
             }
-
 
             if (result.length === 0) {
                 return res.status(404).json({ message: "Aucun produit trouvé" });

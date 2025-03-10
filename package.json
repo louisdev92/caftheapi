@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV= test jest",
+    "test:watch": "NODE_END= test jest --watchAll"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +18,21 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.12.0",
     "nodemon": "^3.1.9"
-  }
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+  "testEnvironement": "node",
+  "coveragePathIgnorePatterns": [
+    "/node_modules"
+  ],
+    "testPathIgnorePatterns" : [
+      "/node_modules",
+      "/__tests__/mocks/",
+      "/db\\.test\\.js$"
+    ],
+    "setupFilesAfterEnv": ["./jest.setup.js"]
+}
 }
